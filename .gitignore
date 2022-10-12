@@ -1,0 +1,6 @@
+.DS_Store
+.env
+node_modules
+meet-api/node_modules
+meet-api/.env
+meet-api/.DS_Store
