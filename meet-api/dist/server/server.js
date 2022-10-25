@@ -17,7 +17,7 @@ class Server {
     initializeDb() {
         return __awaiter(this, void 0, void 0, function* () {
             mongoose.Promise = global.Promise;
-            return yield mongoose.createConnection(environment_1.environment.db.url);
+            return yield mongoose.connect(environment_1.environment.db.url, { autoIndex: false });
         });
     }
     initRoutes(routers) {
