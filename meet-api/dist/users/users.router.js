@@ -31,6 +31,41 @@ class UsersRouter extends router_1.Router {
                 return next();
             });
         });
+        application.post('/users', (req, resp, next) => {
+            let user = new users_model_1.User(req.body); //Cria um novo documento vazio
+            user.save().then(user => {
+                user.password = undefined;
+                resp.json(user);
+                return next();
+            });
+        });
+        application.put('/users/:id', (req, resp, next) => __awaiter(this, void 0, void 0, function* () {
+            yield users_model_1.User.replaceOne({ _id: req.params.id }, req.body, { new: true, upsert: true })
+                .exec().then(result => {
+                if (result.modifiedCount) {
+                    return users_model_1.User.findById(req.params.id);
+                }
+                else {
+                    resp.send(404);
+                }
+            }).then(user => {
+                resp.json(user);
+                return next();
+            });
+        }));
+        application.patch('/users/:id', (req, resp, next) => {
+            const options = { new: true };
+            users_model_1.User.findByIdAndUpdate(req.params.id, req.body, options).then(user => {
+                if (user) {
+                    resp.json(user);
+                    return next();
+                }
+                else {
+                    resp.send(404);
+                    return next();
+                }
+            });
+        });
     }
 }
 exports.usersRouter = new UsersRouter();
