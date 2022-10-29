@@ -14,6 +14,7 @@ const restify = require("restify");
 const mongoose = require("mongoose");
 const environment_1 = require("../common/environment");
 const merge_patch_parser_1 = require("./merge-patch.parser");
+const validations_1 = require("./validations");
 class Server {
     initializeDb() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,6 +32,7 @@ class Server {
                 this.application.use(restify.plugins.queryParser());
                 this.application.use(restify.plugins.bodyParser());
                 this.application.use(merge_patch_parser_1.mergePatchBodyParser);
+                this.application.use(validations_1.validId);
                 for (let router of routers) {
                     router.applyRoutes(this.application);
                 }
