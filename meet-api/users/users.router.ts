@@ -3,35 +3,27 @@ import * as restify from 'restify'
 import {User} from './users.model'
 
 class UsersRouter extends Router {
+
+    constructor() {
+        super()
+        this.on('beforeRender', document => {
+            document.password = undefined
+            //delete document.password
+        })
+    }
+
     applyRoutes(application: restify.Server){
         application.get('/users', async (req, resp, next) => {
-            //resp.json({message: 'users router'})
-
-            await User.find({}).then(users => {
-                resp.json(users)
-                return next()
-            }).catch(err => console.log(err))
+            await User.find().then(this.render(resp, next))
         })
 
         application.get('/users/:id', (req, resp, next) => {
-            User.findById(req.params.id).then(user => {
-                if(user) {
-                    resp.json(user)
-                    return next()
-                }
-
-                resp.send(404)
-                return next()
-            })
+            User.findById(req.params.id).then(this.render(resp, next))
         })
 
         application.post('/users', (req, resp, next) => {
             let user = new User(req.body) //Cria um novo documento vazio
-            user.save().then(user => {
-                user.password = undefined
-                resp.json(user)
-                return next()
-            })
+            user.save().then(this.render(resp, next))
         })
 
         application.put('/users/:id', async (req, resp, next) => {
@@ -42,23 +34,13 @@ class UsersRouter extends Router {
                     } else {
                         resp.send(404)
                     }
-                }).then(user => {
-                    resp.json(user)
-                    return next()
-                })
+                }).then(this.render(resp, next))
         })
 
         application.patch('/users/:id', (req, resp, next) => {
             const options = { new : true }
-            User.findByIdAndUpdate(req.params.id, req.body, options).then(user => {
-                if(user) {
-                    resp.json(user)
-                    return next()
-                } else {
-                    resp.send(404)
-                    return next()
-                }
-            })
+            User.findByIdAndUpdate(req.params.id, req.body, options)
+                .then(this.render(resp, next))
         })
 
         application.del('/users/:id', (req, resp, next) => {
