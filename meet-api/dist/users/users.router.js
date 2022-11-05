@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRouter = void 0;
 const router_1 = require("../common/router");
+const restify_errors_1 = require("restify-errors");
 const users_model_1 = require("./users.model");
 class UsersRouter extends router_1.Router {
     constructor() {
@@ -22,45 +23,49 @@ class UsersRouter extends router_1.Router {
     }
     applyRoutes(application) {
         application.get('/users', (req, resp, next) => __awaiter(this, void 0, void 0, function* () {
-            yield users_model_1.User.find().then(this.render(resp, next));
+            users_model_1.User.find()
+                .then(this.render(resp, next))
+                .catch(next);
         }));
         application.get('/users/:id', (req, resp, next) => {
-            users_model_1.User.findById(req.params.id).then(this.render(resp, next));
+            users_model_1.User.findById(req.params.id)
+                .then(this.render(resp, next))
+                .catch(next);
         });
         application.post('/users', (req, resp, next) => {
             let user = new users_model_1.User(req.body); //Cria um novo documento vazio
-            user.save().then(this.render(resp, next));
+            user.save()
+                .then(this.render(resp, next))
+                .catch(err => next(err));
         });
         application.put('/users/:id', (req, resp, next) => __awaiter(this, void 0, void 0, function* () {
-            yield users_model_1.User.replaceOne({ _id: req.params.id }, req.body, { new: true, upsert: true })
+            users_model_1.User.replaceOne({ _id: req.params.id }, req.body, { new: true, upsert: true })
                 .exec().then(result => {
                 if (result.modifiedCount) {
                     return users_model_1.User.findById(req.params.id);
                 }
                 else {
-                    resp.send(404);
+                    throw new restify_errors_1.NotFoundError('Documento não encontrado');
                 }
-            }).then(this.render(resp, next));
+            }).then(this.render(resp, next))
+                .catch(next);
         }));
         application.patch('/users/:id', (req, resp, next) => {
             const options = { new: true };
             users_model_1.User.findByIdAndUpdate(req.params.id, req.body, options)
-                .then(this.render(resp, next));
+                .then(this.render(resp, next))
+                .catch(next);
         });
         application.del('/users/:id', (req, resp, next) => {
             users_model_1.User.deleteOne({ _id: req.params.id }).exec().then(cmdResult => {
                 if (cmdResult.deletedCount) {
-                    console.log('localizou');
-                    console.log(cmdResult.deletedCount);
                     resp.send(204);
                 }
                 else {
-                    console.log('Não localizou');
-                    console.log(cmdResult.deletedCount);
-                    resp.send(404);
+                    throw new restify_errors_1.NotFoundError('Documento não encontrado');
                 }
                 return next();
-            });
+            }).catch(next);
         });
     }
 }

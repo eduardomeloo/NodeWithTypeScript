@@ -3,15 +3,14 @@ import * as mongoose from 'mongoose'
 import { environment } from '../common/environment'
 import {Router} from '../common/router'
 import {mergePatchBodyParser} from './merge-patch.parser'
-import {validId} from './validations'
-
+import {handleError} from './error.handler'
 export class Server {
 
     application: restify.Server
 
     async initializeDb() {
         (<any>mongoose).Promise = global.Promise
-        return await mongoose.connect(environment.db.url, { autoIndex: false })
+        return mongoose.connect(environment.db.url, { autoIndex: false })
     }
 
     initRoutes(routers: Router[]): Promise<any>{
@@ -27,7 +26,6 @@ export class Server {
                 this.application.use(restify.plugins.queryParser())
                 this.application.use(restify.plugins.bodyParser())
                 this.application.use(mergePatchBodyParser)
-                this.application.use(validId)
 
                 for(let router of routers) {
                     router.applyRoutes(this.application)
@@ -54,33 +52,12 @@ export class Server {
                     return next()
                 })
                 
-                this.application.get('/arrayCallbacksNext', [(req, res, next) => {
-                    if(req.userAgent() && req.userAgent().includes('Chrome/106')) {
-                        //res.status(400)
-                        //res.json({message : 'Please, update your browser'})
-                        //return next(false)
-                        let error: any = new Error()
-                        error.statusCode = 400
-                        error.message = 'Please, update your browser'
-                        return next(error)
-                    }
-                    return next()
-                }, (req, res, next) => {
-                    res.json({
-                        browser: req.userAgent(),
-                        method:  req.method,
-                        url1:    req.href(),
-                        url2:    req.url,
-                        path:    req.path(),
-                        params:  req.params,
-                        query:   req.query
-                    })
-                    return next()
-                }])
-
                 this.application.listen(environment.server.port, () => {
                     resolve(this.application)
                 })
+
+                this.application.on('restifyError', handleError)
+                
             } catch (error) {
                 reject(error)
             }

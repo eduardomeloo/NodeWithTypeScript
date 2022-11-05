@@ -14,12 +14,12 @@ const restify = require("restify");
 const mongoose = require("mongoose");
 const environment_1 = require("../common/environment");
 const merge_patch_parser_1 = require("./merge-patch.parser");
-const validations_1 = require("./validations");
+const error_handler_1 = require("./error.handler");
 class Server {
     initializeDb() {
         return __awaiter(this, void 0, void 0, function* () {
             mongoose.Promise = global.Promise;
-            return yield mongoose.connect(environment_1.environment.db.url, { autoIndex: false });
+            return mongoose.connect(environment_1.environment.db.url, { autoIndex: false });
         });
     }
     initRoutes(routers) {
@@ -32,7 +32,6 @@ class Server {
                 this.application.use(restify.plugins.queryParser());
                 this.application.use(restify.plugins.bodyParser());
                 this.application.use(merge_patch_parser_1.mergePatchBodyParser);
-                this.application.use(validations_1.validId);
                 for (let router of routers) {
                     router.applyRoutes(this.application);
                 }
@@ -55,32 +54,10 @@ class Server {
                     });
                     return next();
                 });
-                this.application.get('/arrayCallbacksNext', [(req, res, next) => {
-                        if (req.userAgent() && req.userAgent().includes('Chrome/106')) {
-                            //res.status(400)
-                            //res.json({message : 'Please, update your browser'})
-                            //return next(false)
-                            let error = new Error();
-                            error.statusCode = 400;
-                            error.message = 'Please, update your browser';
-                            return next(error);
-                        }
-                        return next();
-                    }, (req, res, next) => {
-                        res.json({
-                            browser: req.userAgent(),
-                            method: req.method,
-                            url1: req.href(),
-                            url2: req.url,
-                            path: req.path(),
-                            params: req.params,
-                            query: req.query
-                        });
-                        return next();
-                    }]);
                 this.application.listen(environment_1.environment.server.port, () => {
                     resolve(this.application);
                 });
+                this.application.on('restifyError', error_handler_1.handleError);
             }
             catch (error) {
                 reject(error);
