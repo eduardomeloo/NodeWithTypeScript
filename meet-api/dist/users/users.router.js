@@ -39,9 +39,10 @@ class UsersRouter extends router_1.Router {
                 .catch(err => next(err));
         });
         application.put('/users/:id', (req, resp, next) => __awaiter(this, void 0, void 0, function* () {
-            users_model_1.User.replaceOne({ _id: req.params.id }, req.body, { new: true, upsert: true })
-                .exec().then(result => {
-                if (result.modifiedCount) {
+            const options = { runValidators: true, overwrite: true, returnDocument: 'after' };
+            users_model_1.User.findOneAndUpdate({ _id: req.params.id }, req.body, options)
+                .then(result => {
+                if (result._id) {
                     return users_model_1.User.findById(req.params.id);
                 }
                 else {
@@ -51,7 +52,7 @@ class UsersRouter extends router_1.Router {
                 .catch(next);
         }));
         application.patch('/users/:id', (req, resp, next) => {
-            const options = { new: true };
+            const options = { new: true, runValidators: true };
             users_model_1.User.findByIdAndUpdate(req.params.id, req.body, options)
                 .then(this.render(resp, next))
                 .catch(next);

@@ -35,19 +35,22 @@ class UsersRouter extends Router {
         })
 
         application.put('/users/:id', async (req, resp, next) => {
-            User.replaceOne({_id : req.params.id}, req.body, {new: true, upsert: true})
-                .exec().then(result => {
-                    if(result.modifiedCount){
+            const options = {runValidators: true, overwrite: true, returnDocument: 'after'}
+            User.findOneAndUpdate({_id : req.params.id}, req.body, options)
+                .then(result =>{
+                   
+                    if(result._id){
                         return User.findById(req.params.id)
                     } else {
                         throw new NotFoundError('Documento não encontrado')
                     }
+                    
                 }).then(this.render(resp, next))
                   .catch(next)
         })
 
         application.patch('/users/:id', (req, resp, next) => {
-            const options = { new : true }
+            const options = { new : true, runValidators: true }
             User.findByIdAndUpdate(req.params.id, req.body, options)
                 .then(this.render(resp, next))
                 .catch(next)
