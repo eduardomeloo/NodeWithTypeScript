@@ -7,9 +7,28 @@ const users_model_1 = require("./users.model");
 class UsersRouter extends model_router_1.ModelRouter {
     constructor() {
         super(users_model_1.User);
+        /*
+        findByEMail = (req, resp, next) => {
+            if(req.query.email) {
+                User.find({email: req.query.email})
+                    .then(this.renderAll(resp, next))
+                    .catch(next)
+            } else {
+                next()
+            }
+        }
+        */
         this.findByEMail = (req, resp, next) => {
             if (req.query.email) {
-                users_model_1.User.find({ email: req.query.email })
+                users_model_1.User.findByEmail(req.query.email)
+                    .then(user => {
+                    if (user) {
+                        return [user];
+                    }
+                    else {
+                        return [];
+                    }
+                })
                     .then(this.renderAll(resp, next))
                     .catch(next);
             }

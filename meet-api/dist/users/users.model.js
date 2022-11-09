@@ -37,6 +37,9 @@ const userSchema = new mongoose.Schema({
         }
     }
 });
+userSchema.statics.findByEmail = function (email) {
+    return this.findOne({ email }); //{email: email}
+};
 const hashPassword = (obj, next) => {
     bcrypt.hash(obj.password, environment_1.environment.security.saltRounds) //10 ciclos para gerar valor dinâmico
         .then(hash => {
