@@ -1,3 +1,4 @@
+import { Restaurant } from './../restaurants/restaurants.model';
 import * as restify from 'restify'
 import * as mongoose from 'mongoose'
 import {ModelRouter} from '../common/model-router'
@@ -13,6 +14,13 @@ class ReviewsRouter extends ModelRouter<Review> {
                     .populate('restaurant', 'name')
     }
 
+    envelope(document) {
+        let resource = super.envelope(document)
+        const restId = document.restaurant._id ? document.restaurant._id : document.restaurant
+        resource._links.restaurant = `/restaurants/${restId._id}`
+        return resource
+    }
+
     /*
     findById = (req, resp, next) => {
         this.model.findById(req.params.id)
@@ -24,9 +32,9 @@ class ReviewsRouter extends ModelRouter<Review> {
     */
 
     applyRoutes(application: restify.Server){
-        application.get('/reviews', this.findAll)
-        application.get('/reviews/:id', [this.validateId, this.findById])
-        application.post('/reviews', this.save)
+        application.get(`${this.basePath}`, this.findAll)
+        application.get(`${this.basePath}/:id`, [this.validateId, this.findById])
+        application.post(`${this.basePath}`, this.save)
     }
 }
 
