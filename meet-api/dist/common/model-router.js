@@ -40,7 +40,7 @@ class ModelRouter extends router_1.Router {
             let document = new this.model(req.body); //Cria um novo documento vazio
             document.save()
                 .then(this.render(resp, next))
-                .catch(err => next(err));
+                .catch(error => next(error));
         };
         this.replace = (req, resp, next) => {
             const options = { runValidators: true, overwrite: true, returnDocument: 'after' };

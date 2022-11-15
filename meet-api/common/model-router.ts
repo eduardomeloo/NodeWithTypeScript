@@ -78,7 +78,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
         let document = new this.model(req.body) //Cria um novo documento vazio
         document.save()
             .then(this.render(resp, next))
-            .catch(err => next(err))
+            .catch(error => next(error))
     }
 
     replace = (req, resp, next) => {

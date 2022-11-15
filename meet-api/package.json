@@ -24,6 +24,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^29.2.3",
     "@types/mongoose": "^5.11.97",
+    "@types/node": "^18.11.9",
     "@types/restify": "^8.5.5",
     "@types/restify-errors": "^4.3.4",
     "@types/supertest": "^2.0.12",
