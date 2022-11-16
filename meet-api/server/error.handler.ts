@@ -24,6 +24,7 @@ export const handleError = (req, res, err, done) => {
                     messages.push({message: err.errors[name].message})
                 }
                 res.send(err.statusCode, {
+                    message: 'Validation error while processing your request',
                     errors: messages
                 })
                 break
