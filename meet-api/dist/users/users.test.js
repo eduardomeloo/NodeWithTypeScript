@@ -11,38 +11,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const request = require("supertest");
-const server_1 = require("../server/server");
-const environment_1 = require("../common/environment");
-const users_router_1 = require("./users.router");
-const users_model_1 = require("./users.model");
-let server;
-beforeAll(() => {
-    environment_1.environment.db.url = process.env.DB_URL || 'mongodb://localhost/meat-api-test-db';
-    environment_1.environment.server.port = process.env.SERVER_PORT || 3001;
-    server = new server_1.Server();
-    return server.bootstrap([users_router_1.usersRouter])
-        .then(() => users_model_1.User.remove({}).exec())
-        .catch(console.error);
-});
+let address = global.address;
 test('get /users', () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield request('http://localhost:3001')
+    const response = yield request(address)
         .get('/users');
     expect(response.status).toBe(200);
     expect(response.body.items).toBeInstanceOf(Array);
 }));
 test('post /users', () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield request('http://localhost:3001')
+    const response = yield request(address)
         .post('/users')
         .send({
-        name: 'Junesco',
-        email: 'junesco@josefino.com',
+        name: 'usuario1',
+        email: 'usuario1@email.com',
         password: '123456',
         cpf: '756.581.158-09'
     });
     expect(response.status).toBe(200);
     expect(response.body._id).toBeDefined();
-    expect(response.body.name).toBe('Junesco');
-    expect(response.body.email).toBe('junesco@josefino.com');
+    expect(response.body.name).toBe('usuario1');
+    expect(response.body.email).toBe('usuario1@email.com');
     expect(response.body.cpf).toBe('756.581.158-09');
     expect(response.body.password).toBeUndefined();
+}));
+test('get /users/aaaaa - not found', () => __awaiter(void 0, void 0, void 0, function* () {
+    const response = yield request(address)
+        .get('/users/aaaaa');
+    expect(response.status).toBe(404);
+}));
+test('patch /users/:id', () => __awaiter(void 0, void 0, void 0, function* () {
+    return request(address)
+        .post('/users')
+        .send({
+        name: 'usuario2',
+        email: 'usuario2@email.com',
+        password: '123456'
+    })
+        .then(res => request(address)
+        .patch(`/users/${res.body._id}`)
+        .send({
+        name: 'usuario2 - patch'
+    }))
+        .then(response => {
+        expect(response.status).toBe(200);
+        expect(response.body._id).toBeDefined();
+        expect(response.body.name).toBe('usuario2 - patch');
+        expect(response.body.email).toBe('usuario2@email.com');
+        expect(response.body.password).toBeUndefined();
+    });
 }));

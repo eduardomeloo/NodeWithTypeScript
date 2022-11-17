@@ -1,6 +1,7 @@
 import {ModelRouter} from '../common/model-router'
 import * as restify from 'restify'
 import {User} from './users.model'
+import { authenticate } from '../security/auth.handler'
 
 class UsersRouter extends ModelRouter<User> {
 
@@ -11,17 +12,6 @@ class UsersRouter extends ModelRouter<User> {
             //delete document.password
         })
     }
-    /*
-    findByEMail = (req, resp, next) => {
-        if(req.query.email) {
-            User.find({email: req.query.email})
-                .then(this.renderAll(resp, next))
-                .catch(next)
-        } else {
-            next()
-        }
-    }
-    */
 
     findByEMail = (req, resp, next) => {
         if(req.query.email) {
@@ -48,6 +38,7 @@ class UsersRouter extends ModelRouter<User> {
         application.put({path: `${this.basePath}/:id`}, [this.validateId,this.replace])
         application.patch({path: `${this.basePath}/:id`}, [this.validateId,this.update])
         application.del({path: `${this.basePath}/:id`}, [this.validateId,this.delete])
+        application.post(`${this.basePath}/authenticate`, authenticate)
     }
 }
 
