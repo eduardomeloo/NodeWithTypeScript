@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as restify from 'restify'
 import * as mongoose from 'mongoose'
 import { environment } from '../common/environment'
@@ -21,7 +22,9 @@ export class Server {
                 
                 this.application = restify.createServer({
                     name: 'meat-api',
-                    version: '1.0.0'
+                    version: '1.0.0',
+                    certificate: fs.readFileSync('../security/keys/cert.pem'),
+                    key: fs.readFileSync('../security/keys/key.pem')
                 })
 
                 this.application.use(restify.plugins.queryParser())
@@ -32,14 +35,6 @@ export class Server {
                 for(let router of routers) {
                     router.applyRoutes(this.application)
                 }
-
-                this.application.get('/hello', (req, res, next) => {
-                    res.status(200)
-                    res.setHeader('Content-Type', 'application/json')
-                    res.send({message:'hello'})
-                    //res.json({message:'hello'})
-                    return next()
-                })
                 
                 this.application.get('/info', (req, res, next) => {
                     res.json({

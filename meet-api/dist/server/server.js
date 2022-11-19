@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
+const fs = require("fs");
 const restify = require("restify");
 const mongoose = require("mongoose");
 const environment_1 = require("../common/environment");
@@ -28,7 +29,9 @@ class Server {
             try {
                 this.application = restify.createServer({
                     name: 'meat-api',
-                    version: '1.0.0'
+                    version: '1.0.0',
+                    certificate: fs.readFileSync('../security/keys/cert.pem'),
+                    key: fs.readFileSync('../security/keys/key.pem')
                 });
                 this.application.use(restify.plugins.queryParser());
                 this.application.use(restify.plugins.bodyParser());
@@ -37,13 +40,6 @@ class Server {
                 for (let router of routers) {
                     router.applyRoutes(this.application);
                 }
-                this.application.get('/hello', (req, res, next) => {
-                    res.status(200);
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send({ message: 'hello' });
-                    //res.json({message:'hello'})
-                    return next();
-                });
                 this.application.get('/info', (req, res, next) => {
                     res.json({
                         browser: req.userAgent(),
