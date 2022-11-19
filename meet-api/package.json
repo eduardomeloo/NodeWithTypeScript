@@ -7,7 +7,7 @@
     "node": ">=0.12 < 17.5.0"
   },
   "scripts": {
-    "test": "ts-node jest.startup.ts"
+    "test": "ts-node --files jest.startup.ts"
   },
   "keywords": [],
   "author": "",

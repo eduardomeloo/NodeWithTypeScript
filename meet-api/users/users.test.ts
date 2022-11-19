@@ -1,11 +1,13 @@
 import 'jest'
 import * as request from 'supertest'
 
-let address: string = global.address
+const address: string = global.address
+const auth: string = global.auth
 
 test('get /users', async () => {
     const response = await request(address)
         .get('/users')
+        .set('Authorization', auth)
     expect(response.status).toBe(200);
     expect(response.body.items).toBeInstanceOf(Array)
 })
@@ -13,6 +15,7 @@ test('get /users', async () => {
 test('post /users', async () => {
     const response = await request(address)
         .post('/users')
+        .set('Authorization', auth)
         .send({
             name: 'usuario1',
             email: 'usuario1@email.com',
@@ -30,12 +33,14 @@ test('post /users', async () => {
 test('get /users/aaaaa - not found', async () => {
     const response = await request(address)
         .get('/users/aaaaa')
+        .set('Authorization', auth)
     expect(response.status).toBe(404);
 })
 
 test('patch /users/:id', async () => {
     return request(address)
         .post('/users')
+        .set('Authorization', auth)
         .send({
             name: 'usuario2',
             email: 'usuario2@email.com',
@@ -43,6 +48,7 @@ test('patch /users/:id', async () => {
         })
         .then(res => request(address)
                     .patch(`/users/${res.body._id}`)
+                    .set('Authorization', auth)
                     .send({
                         name: 'usuario2 - patch'
                     })

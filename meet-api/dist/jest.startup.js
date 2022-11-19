@@ -18,6 +18,14 @@ const beforeAllTests = () => {
         reviews_router_1.reviewsRouter
     ])
         .then(() => users_model_1.User.deleteMany({}).exec())
+        .then(() => {
+        let admin = new users_model_1.User();
+        admin.name = 'admin';
+        admin.email = 'admin@email.com';
+        admin.password = '123456';
+        admin.profiles = ['admin', 'user'];
+        return admin.save();
+    })
         .then(() => reviews_model_1.Review.deleteMany({}).exec());
 };
 const afterAllTests = () => {

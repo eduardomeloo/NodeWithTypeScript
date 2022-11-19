@@ -11,16 +11,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const request = require("supertest");
-let address = global.address;
+const address = global.address;
+const auth = global.auth;
 test('get /users', () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield request(address)
-        .get('/users');
+        .get('/users')
+        .set('Authorization', auth);
     expect(response.status).toBe(200);
     expect(response.body.items).toBeInstanceOf(Array);
 }));
 test('post /users', () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield request(address)
         .post('/users')
+        .set('Authorization', auth)
         .send({
         name: 'usuario1',
         email: 'usuario1@email.com',
@@ -36,12 +39,14 @@ test('post /users', () => __awaiter(void 0, void 0, void 0, function* () {
 }));
 test('get /users/aaaaa - not found', () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield request(address)
-        .get('/users/aaaaa');
+        .get('/users/aaaaa')
+        .set('Authorization', auth);
     expect(response.status).toBe(404);
 }));
 test('patch /users/:id', () => __awaiter(void 0, void 0, void 0, function* () {
     return request(address)
         .post('/users')
+        .set('Authorization', auth)
         .send({
         name: 'usuario2',
         email: 'usuario2@email.com',
@@ -49,6 +54,7 @@ test('patch /users/:id', () => __awaiter(void 0, void 0, void 0, function* () {
     })
         .then(res => request(address)
         .patch(`/users/${res.body._id}`)
+        .set('Authorization', auth)
         .send({
         name: 'usuario2 - patch'
     }))
