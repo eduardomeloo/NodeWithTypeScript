@@ -5,6 +5,7 @@ const model_router_1 = require("../common/model-router");
 const restify = require("restify");
 const users_model_1 = require("./users.model");
 const auth_handler_1 = require("../security/auth.handler");
+const authz_handler_1 = require("../security/authz.handler");
 class UsersRouter extends model_router_1.ModelRouter {
     constructor() {
         super(users_model_1.User);
@@ -29,15 +30,19 @@ class UsersRouter extends model_router_1.ModelRouter {
     }
     applyRoutes(application) {
         application.get({ path: `${this.basePath}` }, restify.plugins.conditionalHandler([
-            { version: '1.0.0', handler: this.findAll },
-            { version: '2.0.0', handler: [this.findByEMail, this.findAll] }
+            { version: '1.0.0', handler: [(0, authz_handler_1.authorize)('admin'), this.findAll] },
+            { version: '2.0.0', handler: [
+                    (0, authz_handler_1.authorize)('admin'),
+                    this.findByEMail,
+                    this.findAll
+                ] }
         ]));
         //application.get({path: '/users', version: '1.0.0'}, this.findAll)
-        application.get({ path: `${this.basePath}/:id` }, [this.validateId, this.findById]);
-        application.post({ path: `${this.basePath}` }, this.save);
-        application.put({ path: `${this.basePath}/:id` }, [this.validateId, this.replace]);
-        application.patch({ path: `${this.basePath}/:id` }, [this.validateId, this.update]);
-        application.del({ path: `${this.basePath}/:id` }, [this.validateId, this.delete]);
+        application.get({ path: `${this.basePath}/:id` }, [(0, authz_handler_1.authorize)('admin'), this.validateId, this.findById]);
+        application.post({ path: `${this.basePath}` }, [(0, authz_handler_1.authorize)('admin'), this.save]);
+        application.put({ path: `${this.basePath}/:id` }, [(0, authz_handler_1.authorize)('admin'), this.validateId, this.replace]);
+        application.patch({ path: `${this.basePath}/:id` }, [(0, authz_handler_1.authorize)('admin'), this.validateId, this.update]);
+        application.del({ path: `${this.basePath}/:id` }, [(0, authz_handler_1.authorize)('admin'), this.validateId, this.delete]);
         application.post(`${this.basePath}/authenticate`, auth_handler_1.authenticate);
     }
 }
