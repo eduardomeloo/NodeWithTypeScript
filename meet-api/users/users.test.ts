@@ -30,6 +30,47 @@ test('post /users', async () => {
     expect(response.body.password).toBeUndefined()
 })
 
+test('post /users - nome obrigatório', () => {
+    return request(address)
+            .post('/users')
+            .set('Authorization', auth)
+            .send({
+                email: 'usuario2@email.com',
+                password: '123456',
+                cpf: '539.196.590-07'
+            }).then(response => {
+                expect(response.status).toBe(400)
+                expect(response.body.errors).toBeInstanceOf(Array)
+                expect(response.body.errors[0].message).toContain('name')
+            })
+})
+
+/* Primeiro cria-se um novo usuário.
+   Depois filtra-se por email na expectativa de retornar apenas
+   o que tiver o email identico.
+*/
+
+test('get /users - findByEmail', () => {
+    return request(address)
+            .post('/users')
+            .set('Authorization', auth)
+            .send({
+                name: 'usuário 3',
+                email: 'usuario3@email.com',
+                password: '123456'
+            }).then(response => request(address)
+                    .get('/users')
+                    .set('Authorization', auth)
+                    .query({email: 'usuario3@email.com'}))
+            .then(response => {
+                expect(response.status).toBe(200)
+                expect(response.body.items).toBeInstanceOf(Array)
+                expect(response.body.items).toHaveLength(1)
+                expect(response.body.items[0].email).toBe('usuario3@email.com')
+            })
+
+})
+
 test('get /users/aaaaa - not found', async () => {
     const response = await request(address)
         .get('/users/aaaaa')
