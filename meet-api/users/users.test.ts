@@ -1,3 +1,4 @@
+import { response } from 'express'
 import 'jest'
 import { send } from 'process'
 import * as request from 'supertest'
@@ -174,4 +175,73 @@ test('patch /users/:id', async () => {
             expect(response.body.email).toBe('usuario2@email.com')
             expect(response.body.password).toBeUndefined()  
         })  
+})
+
+test('put /users/aaaa - not found', () => {
+    return request(address)
+        .put('/users/aaaa')
+        .set('Authorization', auth)
+        .then(response => {
+            expect(response.status).toBe(404)
+        })
+})
+/*
+  1. Cria-se um usuario com gender Male
+  2. Atualiza, mas nao informa gender
+  3. Testa se o documento foi substituido -> gender undefined
+*/
+
+test('put /users/:id', () => {
+    return request(address)
+        .post('/users')
+        .set('Authorization', auth)
+        .send({
+            name: 'usuario 7',
+            email: 'user7@email.com',
+            password: '123456',
+            cpf: '613.586.318-59',
+            gender: 'Male'
+        }).then(response => 
+            request(address)
+            .put(`/users/${response.body._id}`)
+            .set('Authorization', auth)
+            .send({
+                name: 'usuario 7',
+                email: 'user7@email.com',
+                password: '123456',
+                cpf: '613.586.318-59'
+            }))
+        .then(response => {
+            expect(response.status).toBe(200)
+            expect(response.body.name).toBe('usuario 7')
+            expect(response.body.email).toBe('user7@email.com')
+            expect(response.body.cpf).toBe('613.586.318-59')
+            expect(response.body.gender).toBeUndefined()
+            expect(response.body.password).toBeUndefined()
+        })
+})
+
+test('authenticate user - not authorized', () => {
+    return request(address)
+        .post('/users/authenticate')
+        .send({
+            email:"admin@email.com",
+            password:"123"
+        })
+        .then(response => {
+            expect(response.status).toBe(403)
+        })
+})
+
+test('authenticate user', () => {
+    return request(address)
+        .post('/users/authenticate')
+        .send({
+            email:"admin@email.com",
+            password:"123456"
+        })
+        .then(response => {
+            expect(response.status).toBe(200)
+            expect(response.body.accessToken).toBeDefined()
+        })
 })
