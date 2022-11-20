@@ -1,4 +1,5 @@
 import 'jest'
+import { send } from 'process'
 import * as request from 'supertest'
 
 const address: string = global.address
@@ -68,7 +69,6 @@ test('get /users - findByEmail', () => {
                 expect(response.body.items).toHaveLength(1)
                 expect(response.body.items[0].email).toBe('usuario3@email.com')
             })
-
 })
 
 test('get /users/aaaaa - not found', async () => {
@@ -76,6 +76,36 @@ test('get /users/aaaaa - not found', async () => {
         .get('/users/aaaaa')
         .set('Authorization', auth)
     expect(response.status).toBe(404);
+})
+
+test('get /users/:id', () => {
+    return request(address)
+        .post('/users')
+        .set('Authorization', auth)
+        .send({
+            name: 'usuário 4',
+            email: 'usuario4@email.com',
+            password: '123456',
+            cpf: '482.326.154-27'
+        }).then(res => request(address)
+                .get(`/users/${res.body._id}`)
+                .set('Authorization', auth))
+        .then(response => {
+            expect(response.status).toBe(200)
+            expect(response.body.name).toBe('usuário 4')
+            expect(response.body.email).toBe('usuario4@email.com')
+            expect(response.body.cpf).toBe('482.326.154-27')
+            expect(response.body.password).toBeUndefined()
+        })
+})
+
+test('delete /users/aaaa - not found', () => {
+    return request(address)
+            .delete(`/users/aaaa`)
+            .set('Authorization', auth)
+            .then(response => {
+                expect(response.status).toBe(404)
+            })
 })
 
 test('patch /users/:id', async () => {
