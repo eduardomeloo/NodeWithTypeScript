@@ -108,6 +108,32 @@ test('delete /users/aaaa - not found', () => {
             })
 })
 
+test('patch /users/aaaa - not found', () => {
+    return request(address)
+        .patch(`/users/aaaa`)
+        .set('Authorization', auth)
+        .then(response => {
+            expect(response.status).toBe(404)
+        })
+})
+
+test('post /users - cpf invalido', () => {
+    return request(address)
+        .post('/users')
+        .set('Authorization', auth)
+        .send({
+            name: 'usuario 5',
+            email: 'usuario5@email.com',
+            password: '123456',
+            cpf: '675.028.222-93'
+        }).then(res => {
+            expect(res.status).toBe(400)
+            expect(res.body.errors).toBeInstanceOf(Array)
+            expect(res.body.errors).toHaveLength(1)
+            expect(res.body.errors[0].message).toContain('Invalid CPF')
+        })
+})
+
 test('patch /users/:id', async () => {
     return request(address)
         .post('/users')
