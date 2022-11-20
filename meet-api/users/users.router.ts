@@ -37,7 +37,7 @@ class UsersRouter extends ModelRouter<User> {
                 this.findAll
             ]}
         ]))
-        //application.get({path: '/users', version: '1.0.0'}, this.findAll)
+        
         application.get({path: `${this.basePath}/:id`}, [authorize('admin'), this.validateId, this.findById])
         application.post({path: `${this.basePath}`}, [authorize('admin'), this.save])
         application.put({path: `${this.basePath}/:id`}, [authorize('admin'), this.validateId,this.replace])

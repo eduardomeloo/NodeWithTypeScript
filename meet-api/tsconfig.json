@@ -2,8 +2,7 @@
     "compilerOptions": {
         "outDir": "dist",
         "target": "ES2016",
-        "module": "commonjs",
-        "typeRoots": ["./node_modules/@types", "./src/types"]
+        "module": "commonjs"
     },
     
     "exclude": [

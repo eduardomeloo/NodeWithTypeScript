@@ -18,7 +18,7 @@ const beforeAllTests = () => {
         usersRouter, 
         reviewsRouter
     ])
-    .then(() => User.deleteMany({}).exec())
+    .then(() => User.deleteMany({}))
     .then(() => {
         let admin = new User()
         admin.name = 'admin'
@@ -27,7 +27,7 @@ const beforeAllTests = () => {
         admin.profiles = ['admin', 'user']
         return admin.save()
     })
-    .then(() => Review.deleteMany({}).exec())
+    .then(() => Review.deleteMany({}))
 }
 
 const afterAllTests = () => {

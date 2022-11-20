@@ -134,6 +134,23 @@ test('post /users - cpf invalido', () => {
         })
 })
 
+test('post /users - email duplicado', async () => {
+    const user = {
+        name: 'usuario 6',
+        email: 'usuario6@email.com',
+        password: '123456',
+        cpf: '593.436.344-12'
+    }
+    await request(address)
+        .post('/users').set('Authorization', auth).send(user)
+
+    const save2 = await request(address)
+        .post('/users').set('Authorization', auth).send(user)                        
+
+    expect(save2.status).toBe(400)
+    expect(save2.body.message).toContain('E11000 duplicate key')
+})
+
 test('patch /users/:id', async () => {
     return request(address)
         .post('/users')

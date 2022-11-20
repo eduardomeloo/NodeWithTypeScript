@@ -12,7 +12,7 @@ export class Server {
 
     async initializeDb() {
         (<any>mongoose).Promise = global.Promise
-        return mongoose.connect(environment.db.url, { autoIndex: false })
+        return mongoose.connect(environment.db.url)
     }
 
     initRoutes(routers: Router[]): Promise<any>{
