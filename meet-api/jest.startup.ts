@@ -5,6 +5,8 @@ import { usersRouter } from './users/users.router'
 import { reviewsRouter } from './reviews/reviews.router'
 import { User } from './users/users.model'
 import { Review } from './reviews/reviews.model'
+import { Restaurant } from './restaurants/restaurants.model'
+import { restaurantsRouter } from './restaurants/restaurants.router'
 
 
 let address: string
@@ -16,7 +18,8 @@ const beforeAllTests = () => {
     server = new Server()
     return server.bootstrap([
         usersRouter, 
-        reviewsRouter
+        reviewsRouter,
+        restaurantsRouter
     ])
     .then(() => User.deleteMany({}))
     .then(() => {
@@ -28,6 +31,8 @@ const beforeAllTests = () => {
         return admin.save()
     })
     .then(() => Review.deleteMany({}))
+    .then(() => Restaurant.deleteMany({}))
+    
 }
 
 const afterAllTests = () => {
