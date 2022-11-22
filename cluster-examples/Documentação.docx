@@ -1,0 +1,21 @@
+Start/Stop script utilizando o pm2
+
+Pelo arquivo
+pm2 start index.js
+pm2 stop index.js
+
+Pelo nome
+pm2 start index
+pm2 stop index
+
+Iniciar aplicação passando um nome para registro
+pm2 start index.js --name=newapp
+
+taskkill /F /PID 3500 -> Derruba o processo, mas ele recria outro automaticamente
+
+pm2 ls -> lista as aplicações gerenciadas pelo pm2
+
+Remover aplicação do registro do pm2
+
+pm2 delete nome_aplicação
+pm2 delete index
