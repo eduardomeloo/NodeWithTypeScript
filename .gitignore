@@ -5,3 +5,4 @@ meet-api/node_modules
 meet-api/security/keys
 meet-api/.env
 meet-api/.DS_Store
+cluster-examples/node_modules
