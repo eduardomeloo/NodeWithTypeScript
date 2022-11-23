@@ -16,8 +16,11 @@ server.get('/echo/:name', function (req, res, next) {
 });
 
 server.get('/', (req, res, next) => {
-    for(let i = 0; i<= 1e8; i++){}
-    res.json({pid: process.pid, echo: req.query})
+    //for(let i = 0; i<= 1e8; i++){} Chamada sincrona para teste
+    setTimeout(() => {
+        res.json({pid: process.pid, echo: req.query})
+    }, 500)
+    
 })
 
 server.listen(4000, function () {

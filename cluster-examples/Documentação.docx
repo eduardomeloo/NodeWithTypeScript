@@ -19,3 +19,16 @@ Remover aplicação do registro do pm2
 
 pm2 delete nome_aplicação
 pm2 delete index
+
+Iniciar o pm2 em modo cluster - parâtro "-i 0" significa que vai iniciar com o máximo de instâncias possível 1 processo por cpu
+pm2 start index.js -i 0
+pm2 scale index 1 - seta somente uma instância
+
+pm2 reload index //reinicar aplicação
+
+
+Fazer teste de carga com o loadteste
+npm i loadtest -g
+executar teste com 100 accessos simultâneos em um tempo de 15 segundos
+loadtest -c 100 -t 15 http://localhost:4000?message=hello
+
