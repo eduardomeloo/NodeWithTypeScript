@@ -26,6 +26,15 @@ pm2 scale index 1 - seta somente uma instância
 
 pm2 reload index //reinicar aplicação
 
+pm2 ecosystem simple -> Cria arquivo de configuração com poucas opções
+pm2 start ecosystem.config.js
+pm2 stop ecosystem.config.js
+pm2 restart ecosystem.config.js
+pm2 reload ecosystem.config.js
+pm2 reload ecosystem.config.js --env production
+pm2 restart ecosystem.config.js --update-env -> para pegar as atualizações do ambiente
+
+
 
 Fazer teste de carga com o loadteste
 npm i loadtest -g
