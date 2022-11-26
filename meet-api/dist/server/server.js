@@ -64,6 +64,16 @@ class Server {
                     resolve(this.application);
                 });
                 this.application.on('restifyError', error_handler_1.handleError);
+                /*
+                this.application.on('after', restify.plugins.auditLogger({
+                    log: logger,
+                    event: 'after',
+                    body: true,
+                    server: this.application
+                }))
+                */
+                this.application.on('audit', data => {
+                });
             }
             catch (error) {
                 reject(error);

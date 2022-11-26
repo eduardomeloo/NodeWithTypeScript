@@ -5,6 +5,7 @@ module.exports = {
     instances: 1,
     exec_mode: "cluster",
     watch: true,
+    merge_logs: true,
     env: {
         SERVER_PORT: 5000,
         DB_URL: 'mongodb://localhost/meat-api',
