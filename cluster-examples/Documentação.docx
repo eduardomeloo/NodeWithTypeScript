@@ -34,7 +34,7 @@ pm2 reload ecosystem.config.js
 pm2 reload ecosystem.config.js --env production
 pm2 restart ecosystem.config.js --update-env -> para pegar as atualizações do ambiente
 
-
+pm2 logs -> visualizar logs do pm2
 
 Fazer teste de carga com o loadteste
 npm i loadtest -g

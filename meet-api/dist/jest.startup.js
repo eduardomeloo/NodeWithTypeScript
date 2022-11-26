@@ -7,6 +7,8 @@ const users_router_1 = require("./users/users.router");
 const reviews_router_1 = require("./reviews/reviews.router");
 const users_model_1 = require("./users/users.model");
 const reviews_model_1 = require("./reviews/reviews.model");
+const restaurants_model_1 = require("./restaurants/restaurants.model");
+const restaurants_router_1 = require("./restaurants/restaurants.router");
 let address;
 let server;
 const beforeAllTests = () => {
@@ -15,9 +17,10 @@ const beforeAllTests = () => {
     server = new server_1.Server();
     return server.bootstrap([
         users_router_1.usersRouter,
-        reviews_router_1.reviewsRouter
+        reviews_router_1.reviewsRouter,
+        restaurants_router_1.restaurantsRouter
     ])
-        .then(() => users_model_1.User.deleteMany({}).exec())
+        .then(() => users_model_1.User.deleteMany({}))
         .then(() => {
         let admin = new users_model_1.User();
         admin.name = 'admin';
@@ -26,7 +29,8 @@ const beforeAllTests = () => {
         admin.profiles = ['admin', 'user'];
         return admin.save();
     })
-        .then(() => reviews_model_1.Review.deleteMany({}).exec());
+        .then(() => reviews_model_1.Review.deleteMany({}))
+        .then(() => restaurants_model_1.Restaurant.deleteMany({}));
 };
 const afterAllTests = () => {
     return server.shutdown();

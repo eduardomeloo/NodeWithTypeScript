@@ -133,25 +133,18 @@ test('post /users - cpf invalido', () => {
     });
 });
 test('post /users - email duplicado', () => __awaiter(void 0, void 0, void 0, function* () {
-    let user = {
+    const user = {
         name: 'usuario 6',
         email: 'usuario6@email.com',
         password: '123456',
         cpf: '593.436.344-12'
     };
     yield request(address)
-        .post('/users')
-        .set('Authorization', auth)
-        .send(user)
-        .then(() => __awaiter(void 0, void 0, void 0, function* () {
-        return yield request(address)
-            .post('/users')
-            .set('Authorization', auth)
-            .send(user)
-            .then(res => console.log(res.status));
-    }));
-    //expect(save2.status).toBe(400)
-    //expect(save2.body.message).toContain('E11000 duplicate key')
+        .post('/users').set('Authorization', auth).send(user);
+    const save2 = yield request(address)
+        .post('/users').set('Authorization', auth).send(user);
+    expect(save2.status).toBe(400);
+    expect(save2.body.message).toContain('E11000 duplicate key');
 }));
 test('patch /users/:id', () => __awaiter(void 0, void 0, void 0, function* () {
     return request(address)
@@ -176,3 +169,67 @@ test('patch /users/:id', () => __awaiter(void 0, void 0, void 0, function* () {
         expect(response.body.password).toBeUndefined();
     });
 }));
+test('put /users/aaaa - not found', () => {
+    return request(address)
+        .put('/users/aaaa')
+        .set('Authorization', auth)
+        .then(response => {
+        expect(response.status).toBe(404);
+    });
+});
+/*
+  1. Cria-se um usuario com gender Male
+  2. Atualiza, mas nao informa gender
+  3. Testa se o documento foi substituido -> gender undefined
+*/
+test('put /users/:id', () => {
+    return request(address)
+        .post('/users')
+        .set('Authorization', auth)
+        .send({
+        name: 'usuario 7',
+        email: 'user7@email.com',
+        password: '123456',
+        cpf: '613.586.318-59',
+        gender: 'Male'
+    }).then(response => request(address)
+        .put(`/users/${response.body._id}`)
+        .set('Authorization', auth)
+        .send({
+        name: 'usuario 7',
+        email: 'user7@email.com',
+        password: '123456',
+        cpf: '613.586.318-59'
+    }))
+        .then(response => {
+        expect(response.status).toBe(200);
+        expect(response.body.name).toBe('usuario 7');
+        expect(response.body.email).toBe('user7@email.com');
+        expect(response.body.cpf).toBe('613.586.318-59');
+        expect(response.body.gender).toBeUndefined();
+        expect(response.body.password).toBeUndefined();
+    });
+});
+test('authenticate user - not authorized', () => {
+    return request(address)
+        .post('/users/authenticate')
+        .send({
+        email: "admin@email.com",
+        password: "123"
+    })
+        .then(response => {
+        expect(response.status).toBe(403);
+    });
+});
+test('authenticate user', () => {
+    return request(address)
+        .post('/users/authenticate')
+        .send({
+        email: "admin@email.com",
+        password: "123456"
+    })
+        .then(response => {
+        expect(response.status).toBe(200);
+        expect(response.body.accessToken).toBeDefined();
+    });
+});

@@ -14,6 +14,7 @@ const fs = require("fs");
 const restify = require("restify");
 const mongoose = require("mongoose");
 const environment_1 = require("../common/environment");
+const logger_1 = require("../common/logger");
 const merge_patch_parser_1 = require("./merge-patch.parser");
 const error_handler_1 = require("./error.handler");
 const token_parser_1 = require("../security/token.parser");
@@ -21,7 +22,7 @@ class Server {
     initializeDb() {
         return __awaiter(this, void 0, void 0, function* () {
             mongoose.Promise = global.Promise;
-            return mongoose.connect(environment_1.environment.db.url, { autoIndex: false });
+            return mongoose.connect(environment_1.environment.db.url);
         });
     }
     initRoutes(routers) {
@@ -29,13 +30,17 @@ class Server {
             try {
                 const options = {
                     name: 'meat-api',
-                    version: '1.0.0'
+                    version: '1.0.0',
+                    log: logger_1.logger
                 };
                 if (environment_1.environment.security.enableHTTPS) {
                     options.certificate = fs.readFileSync(environment_1.environment.security.certificate);
                     options.key = fs.readFileSync(environment_1.environment.security.key);
                 }
                 this.application = restify.createServer(options);
+                this.application.pre(restify.plugins.requestLogger({
+                    log: logger_1.logger
+                }));
                 this.application.use(restify.plugins.queryParser());
                 this.application.use(restify.plugins.bodyParser());
                 this.application.use(merge_patch_parser_1.mergePatchBodyParser);

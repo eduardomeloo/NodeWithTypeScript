@@ -4,6 +4,7 @@ module.exports = {
     script : "./dist/main.js",
     instances: 1,
     exec_mode: "cluster",
+    watch: true,
     env: {
         SERVER_PORT: 5000,
         DB_URL: 'mongodb://localhost/meat-api',
