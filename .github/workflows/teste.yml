@@ -18,5 +18,7 @@ jobs:
       uses: actions/setup-node@v2
     - name: Instalar as dependências do projeto
       run: npm i
+    - name: Acessar diretório da aplicação
+      run: cd meet-api
     - name: Executar os testes de API
       run: npm test
