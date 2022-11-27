@@ -1,16 +1,22 @@
-name: Test com Jest
+    
+name: Testes de API
+
 on:
   push:
     branches:
       - master
+
 jobs:
-  publish:
-    name: Teste
+  teste-de-api-com-serverest-local-em-docker:
+
     runs-on: ubuntu-latest
+
     steps:
-      - actions/checkout@v2
-      - actions/setup-node@v2
-      with:
-        node-version: 14.x
-    - run: npm i
-    - run: npm test
+    - name: Checkout do repositório
+      uses: actions/checkout@v2
+    - name: Setup do Node.js
+      uses: actions/setup-node@v2
+    - name: Instalar as dependências do projeto
+      run: npm i
+    - name: Executar os testes de API
+      run: npm test
