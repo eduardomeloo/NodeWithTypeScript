@@ -7,6 +7,7 @@
     "node": ">=0.12 < 17.5.0"
   },
   "scripts": {
+    "build": "tsc",
     "test": "ts-node --files jest.startup.ts"
   },
   "keywords": [],
