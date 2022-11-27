@@ -16,9 +16,9 @@ jobs:
       uses: actions/checkout@v2
     - name: Setup do Node.js
       uses: actions/setup-node@v2
-    - name: Instalar as dependências do projeto
-      run: npm i
     - name: Acessar diretório da aplicação
       run: cd meet-api
+    - name: Instalar as dependências do projeto
+      run: npm i
     - name: Executar os testes de API
       run: npm test
