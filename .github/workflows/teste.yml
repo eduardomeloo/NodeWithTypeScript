@@ -19,4 +19,4 @@ jobs:
     - name: Acessar diretório da aplicação e Instalar as dependências do projeto
       run: cd meet-api && npm i
     - name: Executar os testes de API
-      run: npm test
+      run: cd meet-api && npm test
