@@ -2,7 +2,7 @@ name: Test com Jest
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   publish:
