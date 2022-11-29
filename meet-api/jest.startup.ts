@@ -11,10 +11,10 @@ import { restaurantsRouter } from './restaurants/restaurants.router'
 let server: Server
 
 const beforeAllTests = () => {
-    environment.db.url = process.env.DB_URL_TESTE || 'mongodb://localhost/meat-api-test-db'
+    environment.db.url = environment.db.url_teste || 'mongodb://localhost/meat-api-test-db'
     environment.server.port = process.env.SERVER_PORT_TESTE || 5001
     console.log(environment.db.url)
-    console.log(process.env.DB_URL_TESTE)
+    console.log(environment.server.port)
     server = new Server()
     return server.bootstrap([
         usersRouter, 
