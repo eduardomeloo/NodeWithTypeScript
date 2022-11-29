@@ -71,9 +71,12 @@ class Server {
                     body: true,
                     server: this.application
                 }))
-                */
+                
+               
                 this.application.on('audit', data => {
-                });
+
+                })
+                */
             }
             catch (error) {
                 reject(error);

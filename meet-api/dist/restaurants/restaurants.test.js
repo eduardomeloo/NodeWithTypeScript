@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const request = require("supertest");
-let address = global.address;
+const address = `http://localhost:${process.env.SERVER_PORT_TESTE || 5001}`;
 const auth = global.auth;
 test('get /restaurants', () => {
     return request(address)

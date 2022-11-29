@@ -1,9 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.environment = void 0;
+require('dotenv').config();
 exports.environment = {
     server: { port: process.env.SERVER_PORT || 3000 },
-    db: { url: process.env.DB_URL || 'mongodb://localhost/meat-api' },
+    db: {
+        url: process.env.DB_URL || 'localhost:27017/meat-api',
+        url_teste: process.env.DB_URL_TESTE || 'mongodb://localhost/meat-api-test-db',
+    },
     security: {
         saltRounds: process.env.SALT_ROUNDS || 10,
         apiSecret: process.env.API_SECRET || 'meat-api-secret',

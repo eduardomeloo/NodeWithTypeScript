@@ -4,6 +4,7 @@ const server_1 = require("./server/server");
 const users_router_1 = require("./users/users.router");
 const restaurants_router_1 = require("./restaurants/restaurants.router");
 const reviews_router_1 = require("./reviews/reviews.router");
+require('dotenv').config();
 const server = new server_1.Server();
 server.bootstrap([
     users_router_1.usersRouter,

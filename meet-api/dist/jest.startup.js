@@ -9,11 +9,16 @@ const users_model_1 = require("./users/users.model");
 const reviews_model_1 = require("./reviews/reviews.model");
 const restaurants_model_1 = require("./restaurants/restaurants.model");
 const restaurants_router_1 = require("./restaurants/restaurants.router");
-let address;
+require('dotenv').config();
 let server;
 const beforeAllTests = () => {
-    environment_1.environment.db.url = process.env.DB_URL || 'mongodb://localhost/meat-api-test-db';
-    environment_1.environment.server.port = process.env.SERVER_PORT || 3001;
+    environment_1.environment.db.url = environment_1.environment.db.url_teste || 'mongodb://localhost/meat-api-test-db';
+    environment_1.environment.server.port = process.env.SERVER_PORT_TESTE || 5001;
+    console.log(environment_1.environment.db.url);
+    console.log(environment_1.environment.server.port);
+    console.log(process.env.SERVER_PORT_TESTE);
+    console.log(process.env.DB_URL_TESTE);
+    console.log(environment_1.environment.db.url_teste);
     server = new server_1.Server();
     return server.bootstrap([
         users_router_1.usersRouter,

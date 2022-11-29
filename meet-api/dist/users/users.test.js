@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 require("jest");
 const request = require("supertest");
-const address = global.address;
+const address = `http://localhost:${process.env.SERVER_PORT_TESTE || 5001}`;
 const auth = global.auth;
 test('get /users', () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield request(address)
