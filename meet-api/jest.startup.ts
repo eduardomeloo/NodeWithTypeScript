@@ -8,13 +8,11 @@ import { Review } from './reviews/reviews.model'
 import { Restaurant } from './restaurants/restaurants.model'
 import { restaurantsRouter } from './restaurants/restaurants.router'
 
-
-let address: string
 let server: Server
 
 const beforeAllTests = () => {
-    environment.db.url = process.env.DB_URL || 'mongodb://localhost/meat-api-test-db'
-    environment.server.port = process.env.SERVER_PORT || 3001
+    environment.db.url = process.env.DB_URL_TESTE || 'mongodb://localhost/meat-api-test-db'
+    environment.server.port = process.env.SERVER_PORT_TESTE || 5001
     server = new Server()
     return server.bootstrap([
         usersRouter, 

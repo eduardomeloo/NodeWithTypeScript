@@ -1,9 +1,8 @@
-import { response } from 'express';
 import 'jest'
 
 import * as request from 'supertest'
 
-let address: string = (<any>global).address
+const address: string = `http://localhost:${process.env.SERVER_PORT_TESTE || 5001}`
 const auth: string = (<any>global).auth
 
 test('get /restaurants', () => {

@@ -1,9 +1,7 @@
-import { response } from 'express'
 import 'jest'
-import { send } from 'process'
 import * as request from 'supertest'
 
-const address: string = global.address
+const address: string = `http://localhost:${process.env.SERVER_PORT_TESTE || 5001}`
 const auth: string = global.auth
 
 test('get /users', async () => {

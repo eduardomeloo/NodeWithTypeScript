@@ -2,7 +2,7 @@ import 'jest'
 import * as request from 'supertest'
 import * as mongoose from 'mongoose'
 
-let address: string = global.address
+const address: string = `http://localhost:${process.env.SERVER_PORT_TESTE || 5001}`
 const auth: string = global.auth
 
 test('get /reviews', () => {
