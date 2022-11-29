@@ -8,6 +8,8 @@ import { Review } from './reviews/reviews.model'
 import { Restaurant } from './restaurants/restaurants.model'
 import { restaurantsRouter } from './restaurants/restaurants.router'
 
+require('dotenv').config()
+
 let server: Server
 
 const beforeAllTests = () => {
