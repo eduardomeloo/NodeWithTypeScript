@@ -15,6 +15,10 @@ const beforeAllTests = () => {
     environment.server.port = process.env.SERVER_PORT_TESTE || 5001
     console.log(environment.db.url)
     console.log(environment.server.port)
+    console.log(process.env.SERVER_PORT_TESTE)
+    console.log(process.env.DB_URL_TESTE)
+    console.log(environment.db.url_teste)
+    
     server = new Server()
     return server.bootstrap([
         usersRouter, 
